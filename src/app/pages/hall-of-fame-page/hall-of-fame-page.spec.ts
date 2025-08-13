@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HallOfFamePage } from './hall-of-fame-page';
+import HallOfFamePage from './hall-of-fame-page';
+import {provideZonelessChangeDetection} from '@angular/core';
 
 describe('HallOfFamePage', () => {
   let component: HallOfFamePage;
@@ -8,7 +9,10 @@ describe('HallOfFamePage', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HallOfFamePage]
+      imports: [HallOfFamePage],
+      providers: [
+        provideZonelessChangeDetection()
+      ],
     })
     .compileComponents();
 
