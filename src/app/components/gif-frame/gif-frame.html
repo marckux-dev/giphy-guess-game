@@ -1,1 +1,12 @@
-<p>gif-frame works!</p>
+<div class="w-full flex items-center justify-center">
+  @if (gif(); as _gif) {
+    <img
+      [src]="_gif.url"
+      [alt]="_gif.title"
+      class="max-w-full max-h-[60vh] rounded-lg shadow-lg"
+    />
+  } @else {
+    <div class="opacity-70">Loading…</div>
+  }
+</div>
+

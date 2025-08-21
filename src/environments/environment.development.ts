@@ -3,4 +3,6 @@ export const environment = {
   apiKey: 'C1tFIHXJAjMUB7UQddbOJt0yxN3v5W5m',
   apiUrl: 'https://api.giphy.com/v1',
   limit: 50,
+  timeBetweenGifs: 4000,
+  numberOfGifsBetweenTips: 3,
 };

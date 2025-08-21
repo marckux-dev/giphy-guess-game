@@ -1,5 +1,5 @@
-import {Component, inject} from '@angular/core';
-import {GameEngine} from '../../services/game-engine';
+import {Component, input} from '@angular/core';
+import {Gif} from '../../interfaces/gif';
 
 @Component({
   selector: 'app-gif-frame',
@@ -7,8 +7,6 @@ import {GameEngine} from '../../services/game-engine';
   templateUrl: './gif-frame.html',
   styles: ``
 })
-export class GifFrame {
-
-  gameEngine = inject(GameEngine);
-
+export class GifFrame  {
+  gif = input.required<Gif|null>();
 }

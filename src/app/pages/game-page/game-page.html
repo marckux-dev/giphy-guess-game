@@ -1,4 +1,6 @@
 <div class="container">
-  <app-gif-frame />
-  <app-word [text]="gameEngine.currentTerm()"/>
+  <div class="mb-3">
+    <app-gif-frame [gif]="currentGif()" />
+  </div>
+  <app-word [text]="currentTemplate()"/>
 </div>

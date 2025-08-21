@@ -1,4 +1,4 @@
-import {getPositions, hideTerm, shuffleArray} from './word-utils';
+import {getPositions, hideTerm, shuffleArrayOfWords} from './word-utils';
 
 describe('hideTerm', () => {
   it('should replace only alphabetic characters with underscores', () => {
@@ -68,13 +68,13 @@ describe('getPositions', () => {
 describe('shuffleArray', () => {
   it('should return an array of the same length', () => {
     const input = ['a', 'b', 'c', 'd'];
-    const result = shuffleArray(input);
+    const result = shuffleArrayOfWords(input);
     expect(result.length).toBe(input.length);
   });
 
   it('should contain the same elements (ignoring order)', () => {
     const input = ['apple', 'banana', 'cherry'];
-    const result = shuffleArray(input);
+    const result = shuffleArrayOfWords(input);
     expect(result.sort()).toEqual(input.slice().sort());
   });
 
@@ -84,7 +84,7 @@ describe('shuffleArray', () => {
 
     // Try multiple runs to check for non-determinism
     for (let i = 0; i < 10; i++) {
-      runs.add(shuffleArray(input).join(''));
+      runs.add(shuffleArrayOfWords(input).join(''));
     }
 
     // Expect at least one run to produce a different order
@@ -94,17 +94,17 @@ describe('shuffleArray', () => {
   it('should not mutate the original array', () => {
     const input = ['1', '2', '3'];
     const copy = [...input];
-    shuffleArray(input);
+    shuffleArrayOfWords(input);
     expect(input).toEqual(copy);
   });
 
   it('should return an empty array when input is empty', () => {
-    const result = shuffleArray([]);
+    const result = shuffleArrayOfWords([]);
     expect(result).toEqual([]);
   });
 
   it('should return the same single element when input has one item', () => {
-    const result = shuffleArray(['solo']);
+    const result = shuffleArrayOfWords(['solo']);
     expect(result).toEqual(['solo']);
   });
 });

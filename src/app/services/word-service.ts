@@ -1,5 +1,5 @@
 import {Injectable, signal} from '@angular/core';
-import {shuffleArray} from '../helpers/word-utils';
+import {shuffleArrayOfWords} from '../helpers/word-utils';
 import {DEFAULT_SEARCH_TERMS} from '../constants/gif-constants';
 
 @Injectable({
@@ -8,8 +8,12 @@ import {DEFAULT_SEARCH_TERMS} from '../constants/gif-constants';
 export class WordService {
 
   words = signal<string[]>(
-    shuffleArray(DEFAULT_SEARCH_TERMS)
+    shuffleArrayOfWords(DEFAULT_SEARCH_TERMS)
   );
+
+  reset(): void {
+    this.words.set(shuffleArrayOfWords(DEFAULT_SEARCH_TERMS));
+  }
 
   serveWord(): string {
     let word: string | undefined;
