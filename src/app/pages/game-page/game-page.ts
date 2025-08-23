@@ -1,9 +1,10 @@
-import {Component, computed, effect, inject, OnInit, signal} from '@angular/core';
+import {Component, computed, effect, HostListener, inject, OnDestroy, signal} from '@angular/core';
 import {GifFrame} from '../../components/gif-frame/gif-frame';
 import {GameEngine} from '../../services/game-engine';
 import {Word} from '../../components/word/word';
 import {environment} from '../../../environments/environment';
 import {Subscription, timer} from 'rxjs';
+import {isAlphabetic} from '../../helpers/word-utils';
 
 @Component({
   selector: 'app-game-page',
@@ -14,7 +15,7 @@ import {Subscription, timer} from 'rxjs';
   templateUrl: './game-page.html',
   styles: ``
 })
-export default class GamePage {
+export default class GamePage implements OnDestroy {
   private gameEngine = inject(GameEngine);
   private gifs = computed(() => this.gameEngine.currentGifs());
 
@@ -31,6 +32,10 @@ export default class GamePage {
   });
 
   currentTemplate = computed(() => this.gameEngine.currentTemplate() );
+  guess = signal<string>('');
+  badGuess = signal<boolean>(false);
+  goodGuess = computed(() => this.gameEngine.checkTerm(this.guess()));
+  blockKeyboardInput = signal<boolean>(false);
 
   constructor() {
     effect(() => {
@@ -55,4 +60,42 @@ export default class GamePage {
     this.tick?.unsubscribe();
     this.tick = undefined;
   }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    if (this.blockKeyboardInput()) return;
+    const key = event.key;
+    if (key.length !== 1 || !isAlphabetic(key)) return;
+    const provisionalGuess = this.guess() + key;
+    const revealed = this.gameEngine.revealWithGuess(provisionalGuess);
+    if (!revealed) {
+      this.guess.set(provisionalGuess);
+      this.badGuess.set(true);
+      this.blockKeyboardInput.set(true);
+      setTimeout(() => {
+        this.guess.set('');
+        this.badGuess.set(false);
+        this.blockKeyboardInput.set(false);
+      }, 500);
+    } else {
+      this.guess.update(guess => this.gameEngine.revealWithGuess(guess + key));
+      if (this.goodGuess()) {
+        this.stopTimer();
+        this.blockKeyboardInput.set(true);
+        setTimeout(() => {
+          this.guess.set('');
+          this.blockKeyboardInput.set(false);
+          this.gameEngine.newWord();
+        }, 1000);
+      }
+
+    }
+  }
+
+  ngOnDestroy() {
+    this.stopTimer();
+  }
+
+
+
 }

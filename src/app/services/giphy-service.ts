@@ -21,7 +21,7 @@ export class GiphyService {
         limit: environment.limit,
       }
     }).pipe(
-      map(GifMapper.ghiphyResponseToGifs),
+      map(GifMapper.giphyResponseToGifs),
     );
   }
 }

@@ -2,5 +2,12 @@
   <div class="mb-3">
     <app-gif-frame [gif]="currentGif()" />
   </div>
-  <app-word [text]="currentTemplate()"/>
+  <div class="flex justify-center">
+    <div class="mt-3 inline-block">
+      <app-word [text]="currentTemplate()" />
+      <div [class.text-red-600]="badGuess()" [class.text-green-600]="goodGuess()">
+        <app-word [text]="guess()" />
+      </div>
+    </div>
+  </div>
 </div>

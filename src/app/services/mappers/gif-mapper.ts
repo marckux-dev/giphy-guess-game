@@ -11,7 +11,7 @@ export class GifMapper {
     };
   }
 
-  static ghiphyResponseToGifs(giphyResponse: GiphyResponse): Gif[] {
+  static giphyResponseToGifs(giphyResponse: GiphyResponse): Gif[] {
     return giphyResponse.data.map(GifMapper.giphyItemToGif);
   }
 }

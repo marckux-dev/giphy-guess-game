@@ -14,10 +14,10 @@ export const getPositions = (term: string, character: string): number[] =>
 export const shuffleArrayOfWords: (arr:string[]) => string[] = shuffleArray<string>;
 
 export const revealRandomLetter = (term: string, template: string) => {
-  const positons = getPositions(template, '_');
-  if (positons.length === 0) return template;
-  const randomIndex = Math.floor(Math.random() * positons.length);
-  const position = positons[randomIndex];
+  const positions = getPositions(template, '_');
+  if (positions.length === 0) return template;
+  const randomIndex = Math.floor(Math.random() * positions.length);
+  const position = positions[randomIndex];
   const letter = term[position];
   template = template.slice(0, position) + letter + template.slice(position + 1);
   return template;

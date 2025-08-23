@@ -2,10 +2,8 @@ import {computed, effect, inject, Injectable, signal} from '@angular/core';
 import {WordService} from './word-service';
 import {Gif} from '../interfaces/gif';
 import {GiphyService} from './giphy-service';
-import {interval, merge, mergeAll, startWith, Subject, takeUntil, tap} from 'rxjs';
-import {environment} from '../../environments/environment';
 import {shuffleArray} from '../helpers/array-utils';
-import {hideTerm, revealRandomLetter} from '../helpers/word-utils';
+import {hideTerm, isAlphabetic, revealRandomLetter} from '../helpers/word-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -15,24 +13,24 @@ export class GameEngine {
   wordServer = inject(WordService);
   giphyServer = inject(GiphyService);
 
-  currentTerm = signal<string>(
-    this.wordServer.serveWord()
-  );
-
+  currentTerm = signal<string>(this.wordServer.serveWord());
   currentTemplate = signal<string>(hideTerm(this.currentTerm()));
-
   currentGifs = signal<Gif[]>([]);
 
-  isRevealed = computed(() => this.checkTerm(this.currentTemplate()));
 
   private guardTerm = effect(() => {
     const term = this.currentTerm();
     if (term) {
+      this.currentTemplate.set(hideTerm(term));
       this.giphyServer.getGifsByTerm(term).subscribe(gifs => {
         this.currentGifs.set(shuffleArray(gifs));
       });
     }
   });
+
+  newWord = () => {
+    this.currentTerm.set(this.wordServer.serveWord());
+  }
 
   checkTerm = (term: string) =>
     term.trim().toLowerCase() === this.currentTerm().trim().toLowerCase();
@@ -41,8 +39,23 @@ export class GameEngine {
     this.currentTemplate.update( template => revealRandomLetter(this.currentTerm(), template));
   }
 
-
-
-
+  revealWithGuess = (guess: string) => {
+    const term = this.currentTerm();
+    let lowerCaseGuess = guess.trim().toLowerCase();
+    if (term.startsWith(lowerCaseGuess)) {
+      const rest = term.slice(guess.length);
+      for (const letter of rest) {
+        if (!isAlphabetic(letter)) {
+          lowerCaseGuess += letter;
+        } else {
+          break;
+        }
+      }
+      this.currentTemplate.update(template => lowerCaseGuess + template.slice(lowerCaseGuess.length));
+      return lowerCaseGuess;
+    } else {
+      return '';
+    }
+  }
 
 }
